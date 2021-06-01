@@ -4,10 +4,10 @@ library(rstan)
 # T, number of time points
 # N, number of regions
 # n_neighbours, number of neighbours for each region as a vector
-# M, maximum number of neighbours for one region
-# neighbours, matrix of neighbours
-# prices, matrix of rye log-prices
-# missing, matrix indicating missingness
+# M, maximum number of neighbours for any region
+# neighbours, matrix of neighbours: row represents a region, each cell holds the id number of the neighbour
+# prices, matrix of rye log-prices: row represents a region, column a date
+# missing, matrix indicating missingness: row represents a region, column a date; 0 = present, 1 = missing
 par <- readRDS("par.rds")
 
 # initial values
