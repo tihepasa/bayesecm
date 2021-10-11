@@ -10,18 +10,24 @@ library(rstan)
 # missing, matrix indicating missingness: row represents a region, column a date; 0 = present, 1 = missing
 par <- readRDS("par.rds")
 
-# initial values
+a <- proc.time()
+
+# initial values, u
 set.seed(1)
 k <- sum(par$n_neighbours)
 inits <- replicate(4,
                    list(
-                     sigma_y = runif(1, 0.05, 0.5),
-                     sigma_mu = runif(1, 0.1, 1),
-                     sigma_a = runif(1, 0.01, 0.1),
-                     sigma_c = runif(1, 0.1, 1),
+                     sigma_y = runif(1, 0.03, 0.05),
+                     sigma_mu = runif(1, 0.03, 0.05),
+                     sigma_a = runif(1, 0.01, 0.03),
+                     sigma_c = runif(1, 0.15, 0.25),
                      a = rep(0, par$T),
-                     b = abs(rnorm(k, 0.15, 0.1)),
+                     b = abs(rnorm(k, 0.15, 0.1)), 
                      c_std = matrix(rnorm(k * par$T, -2, 0.5), nrow = k, ncol = par$T),
+                     lambda = rep(1, par$N),
+                     sigma_lambda = 0.3,
+                     phi = 0.6,
+                     const_a = 0,
                      mu = par$prices), simplify = FALSE)
 
 model_code <- stan_model("bayesecm_model.stan")

@@ -2,7 +2,7 @@
 
 functions {
 
-  // customary function for the likelihood
+  // custom function for the likelihood
   real likelihood(matrix mu, matrix eta, real sigma, matrix I_B) {
     
     int N = rows(mu);
@@ -22,7 +22,7 @@ data {
   
   int<lower=0> T; // number of time points
   int<lower=0> N; // number of regions
-  int<lower=0> n_neighbours[N]; // number of neighbours for each region (cannot be a neighbor of itself)
+  int<lower=0> n_neighbours[N]; // number of neighbours for each region (cannot be a neighbour of itself)
   int<lower=0> M; // maximum number of neighbours
   int<lower=0> neighbours[N, M]; // matrix of neighbours
   matrix[N, T] prices; // matrix of (log-)prices
@@ -42,12 +42,16 @@ transformed data {
   
 }
 parameters {
-  
+  vector<lower=0>[N] lambda; // site specific trend log-intensity
   vector[T] a; // common trend
   vector<lower=0>[n] b; // short-term effect
   matrix[n, T] c_std; // raw value for the reparameterized long-term effect i.e. error correction coefficient
   
+  real const_a; // constant for AR(1) process
+  real<lower=0, upper=1> phi; // coefficient for AR(1) process
+  
   // standard deviations
+  real<lower=0> sigma_lambda;
   real<lower=0> sigma_a;
   real<lower=0> sigma_c; // for the actual (reparameterized) gamma
   real<lower=0> sigma_y; 
@@ -93,7 +97,7 @@ transformed parameters {
         D[neighbours[i, 1:n_neighbours[i]], i] = -(b[idx_alku:idx_loppu] + c[idx_alku:idx_loppu, t]); // non-zero elements
       }
       
-      eta[, t] = a[t] + D' * mu[, t];
+      eta[, t] = a[t] * lambda + D' * mu[, t];
     }
 
   log_p_mu = likelihood(mu, eta, sigma_mu, I_B');
@@ -108,10 +112,16 @@ model {
   sigma_mu ~ gamma(2, 20);
   mu[, 1] ~ normal(3, 0.5);
   
-  // random walk alpha
-  a[1] ~ normal(0, 0.1);
-  for (t in 2:T) a[t] ~ normal(a[t - 1], sigma_a);
+  // AR(1) alpha
+  a[1] ~ normal(const_a / (1 - phi), sigma_a / sqrt(1 - phi^2));
+  a[2:T] ~ normal(const_a + phi * a[1:(T - 1)], sigma_a);
   sigma_a ~ gamma(2, 100);
+  const_a ~ normal(0, 0.1);
+  phi ~ beta(2, 2);
+  
+  // lambda ~ N(1, sigma_lambda^2)
+  sigma_lambda ~ normal(0, 0.5);
+  lambda ~ normal(1, sigma_lambda);
   
   // beta
   b ~ gamma(0.5, 2); // 95% prior interval [0.00025, 1.25597], median 0.11
