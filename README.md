@@ -26,23 +26,23 @@ The priors we use for our model were chosen to reduce computational burden. The 
 | &sigma;<sub>&lambda;</sub> | 0.422         | 0.002       | 0.067  | 0.302    | 0.565     | 0.456       | 0.002       | 0.071  | 0.325    | 0.604     |
 | &sigma;<sub>c</sub>        | 0.203         | 0.001       | 0.032  | 0.144    | 0.273     | 0.213       | 0.001       | 0.032  | 0.152    | 0.279     |
 
-![image](https://user-images.githubusercontent.com/65618755/158409579-54d4b0fa-12c8-4577-b883-ab6f9fcf83d3.png)
+![image](https://user-images.githubusercontent.com/65618755/162422597-7db0f523-07d9-4d78-8d89-1c17360b0c91.png)
 
-**Fig. 1.** Estimated latent processes &mu;<sub>i,t</sub> of the model with wide priors for some example sites.
+**Fig. 1.** Estimated latent processes &mu;<sub>i,t</sub> of the model with wide priors for some example sites. In practice the difference between this and the corresponding values given the model with stricter priors is very small.
 
-![image](https://user-images.githubusercontent.com/65618755/158410914-671cb854-6314-401a-ac7b-accd0dd0bb51.png)
+![image](https://user-images.githubusercontent.com/65618755/162422740-54e7b75c-96ce-42c9-a36d-ae5eb7cb717a.png)
 
 **Fig. 2.** Estimated trend &alpha;<sub>t</sub> of the model with wide priors.
 
-![image](https://user-images.githubusercontent.com/65618755/158410226-681157bc-4a5b-430b-a858-5a59528974aa.png)
+![image](https://user-images.githubusercontent.com/65618755/162422881-bf917a92-2102-482a-a91a-487d81e3bffa.png)
 
 **Fig. 3.** Estimated trend intensity parameters &lambda;<sub>i</sub> of the model with wide priors.
 
-![image](https://user-images.githubusercontent.com/65618755/158410515-af2d9ead-fd24-4708-99f2-478f320189d0.png)
+![image](https://user-images.githubusercontent.com/65618755/162423039-b6ea91b1-c8de-43ca-8142-68e583f907fd.png)
 
 **Fig. 4.** Estimated short-term parameters &beta;<sub>i,j</sub> of the model with wide priors.
 
-![image](https://user-images.githubusercontent.com/65618755/158410596-27642202-2f28-43e0-b7dc-e842cfb1f057.png)
+![image](https://user-images.githubusercontent.com/65618755/162423235-a999f938-23ad-42b7-948b-f89a57c48899.png)
 
 **Fig. 5.** Estimated error correction parameters &gamma;<sub>i,j,t</sub> of the model with wide priors.
 
