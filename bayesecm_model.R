@@ -12,7 +12,7 @@ par <- readRDS("par.rds")
 
 a <- proc.time()
 
-# initial values, u
+# initial values
 set.seed(1)
 k <- sum(par$n_neighbours)
 inits <- replicate(4,
@@ -23,9 +23,9 @@ inits <- replicate(4,
                      sigma_c = runif(1, 0.15, 0.25),
                      a = rep(0, par$T),
                      b = abs(rnorm(k, 0.15, 0.1)), 
-                     c_std = matrix(rnorm(k * par$T, -2, 0.5), nrow = k, ncol = par$T),
-                     lambda = rep(1, par$N),
-                     sigma_lambda = 0.3,
+                     c_std = matrix(0, nrow = k, ncol = par$T),
+                     lambda_raw = rep(0, par$N - 1),
+                     sigma_lambda = 0.1,
                      phi = 0.6,
                      const_a = 0,
                      mu = par$prices), simplify = FALSE)
@@ -33,12 +33,12 @@ inits <- replicate(4,
 model_code <- stan_model("bayesecm_model.stan")
 
 # fit the model
-fit <- sampling(model_code, data = par, iter = 6000, warmup = 3000,
-                     chains = 4, include = FALSE, pars = "c_std", cores = 4,
-                     refresh = 50, init = inits, save_warmup = FALSE)
+fit <- sampling(model_code, data = par, iter = 8000, warmup = 3000,
+                chains = 4, include = FALSE, pars = c("lambda_raw", "c_std"), cores = 4,
+                refresh = 10, init = inits, save_warmup = FALSE)
 
 # some results as an example
-print(fit, pars = c("sigma_a", "sigma_c", "sigma_mu", "sigma_y"))
+print(fit, pars = c("sigma_a", "sigma_c", "sigma_mu", "sigma_y"), use_cache = FALSE)
 
 plot(fit, pars = "sigma_y", plotfun = "trace")
 plot(fit, pars = "sigma_y", show_density = T)

@@ -22,7 +22,7 @@ data {
   
   int<lower=0> T; // number of time points
   int<lower=0> N; // number of regions
-  int<lower=0> n_neighbours[N]; // number of neighbours for each region (cannot be a neighbour of itself)
+  int<lower=0> n_neighbours[N]; // number of neighbours for each region (cannot be a neighbor of itself)
   int<lower=0> M; // maximum number of neighbours
   int<lower=0> neighbours[N, M]; // matrix of neighbours
   matrix[N, T] prices; // matrix of (log-)prices
@@ -31,6 +31,9 @@ data {
 
 }
 transformed data {
+  
+  // scale parameter to implement the sum-to-1 constraint for the lambda
+  real scale = inv(sqrt(1 - inv(N)));
   
   // helper variables for looping through the coefficient matrices
   
@@ -42,16 +45,17 @@ transformed data {
   
 }
 parameters {
-  vector<lower=0>[N] lambda; // site specific trend log-intensity
-  vector[T] a; // common trend
-  vector<lower=0>[n] b; // short-term effect
+  // in the paper a = alpha, b = beta, c = gamma
+  real<lower=0> sigma_lambda;
+  vector[N-1] lambda_raw; // site specific trend log-intensity
+  vector[T] a; // common trend, named alpha in the paper
+  vector<lower=0>[n] b; // short-term effect, named beta in the paper
   matrix[n, T] c_std; // raw value for the reparameterized long-term effect i.e. error correction coefficient
   
-  real const_a; // constant for AR(1) process
-  real<lower=0, upper=1> phi; // coefficient for AR(1) process
+  real const_a; // constant for AR(1) process alpha
+  real<lower=0, upper=1> phi; // coefficient for AR(1) process alpha
   
   // standard deviations
-  real<lower=0> sigma_lambda;
   real<lower=0> sigma_a;
   real<lower=0> sigma_c; // for the actual (reparameterized) gamma
   real<lower=0> sigma_y; 
@@ -61,7 +65,7 @@ parameters {
   
 }
 transformed parameters {
-  
+  vector[N] lambda = 1 + append_row(lambda_raw, -sum(lambda_raw));
   matrix[n, T] c; // actual reparameterized error correction coefficients
   real log_p_mu; // log-density of mu
   
@@ -121,7 +125,7 @@ model {
   
   // lambda ~ N(1, sigma_lambda^2)
   sigma_lambda ~ normal(0, 0.5);
-  lambda ~ normal(1, sigma_lambda);
+  lambda ~ normal(1, sigma_lambda * scale);
   
   // beta
   b ~ gamma(0.5, 2); // 95% prior interval [0.00025, 1.25597], median 0.11

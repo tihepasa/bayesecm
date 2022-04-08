@@ -1,4 +1,3 @@
-
 // Stan code to implement the model for the rye prices
 
 /***** Case with very vague priors *****/
@@ -35,6 +34,9 @@ data {
 }
 transformed data {
   
+  // scale parameter to implement the sum-to-1 constraint for the lambda
+  real scale = inv(sqrt(1 - inv(N)));
+  
   // helper variables for looping through the coefficient matrices
   
   int<lower=0> n_neighbours_cumsum[N + 1]; // vector of cumulative sum of regional number of neighbours
@@ -45,14 +47,15 @@ transformed data {
   
 }
 parameters {
-  real<lower=0> sigma_ypsilon;
-  vector<lower=0>[N] ypsilon; // site specific trend log-intensity
-  vector[T] a; // common trend
-  vector<lower=0>[n] b; // short-term effect
+  // in the paper a = alpha, b = beta, c = gamma
+  real<lower=0> sigma_lambda;
+  vector[N-1] lambda_raw;
+  vector[T] a; // common trend, named alpha in the paper
+  vector<lower=0>[n] b; // short-term effect, named beta in the paper
   matrix[n, T] c_std; // raw value for the reparameterized long-term effect i.e. error correction coefficient
   
-  real const_a; // constant for AR(1) process
-  real<lower=0, upper=1> phi; // coefficient for AR(1) process
+  real const_a; // constant for AR(1) process alpha
+  real<lower=0, upper=1> phi; // coefficient for AR(1) process alpha
   
   // standard deviations
   real<lower=0> sigma_a;
@@ -64,7 +67,7 @@ parameters {
   
 }
 transformed parameters {
-  
+  vector[N] lambda = 1 + append_row(lambda_raw, -sum(lambda_raw));
   matrix[n, T] c; // actual reparameterized error correction coefficients
   real log_p_mu; // log-density of mu
   
@@ -100,7 +103,7 @@ transformed parameters {
         D[neighbours[i, 1:n_neighbours[i]], i] = -(b[idx_alku:idx_loppu] + c[idx_alku:idx_loppu, t]); // non-zero elements
       }
       
-      eta[, t] = a[t] * ypsilon + D' * mu[, t];
+      eta[, t] = a[t] * lambda + D' * mu[, t];
     }
 
   log_p_mu = likelihood(mu, eta, sigma_mu, I_B');
@@ -111,27 +114,27 @@ transformed parameters {
 model {
   
   // actual and latent prices
-  sigma_y ~ gamma(2, 1); // more diffuse
-  sigma_mu ~ gamma(2, 1); // more diffuse
-  mu[, 1] ~ normal(3, 1); // more diffuse
+  sigma_y ~ gamma(2, 10); // more diffuse
+  sigma_mu ~ gamma(2, 10); // more diffuse
+  mu[, 1] ~ normal(3, 0.5);
   
   // AR(1) alpha
   a[1] ~ normal(const_a / (1 - phi), sigma_a / sqrt(1 - phi^2));
   a[2:T] ~ normal(const_a + phi * a[1:(T - 1)], sigma_a);
-  sigma_a ~ gamma(2, 1); // more diffuse
-  const_a ~ std_normal();
+  sigma_a ~ gamma(2, 50); // more diffuse
+  const_a ~ normal(0, 0.5); // more diffuse
   phi ~ beta(2, 2);
   
-  // ypsilon ~ N(1, sigma_ypsilon^2)
-  sigma_ypsilon ~ gamma(2, 1); // more diffuse
-  ypsilon ~ normal(1, sigma_ypsilon);
+  // lambda ~ N(1, sigma_lambda^2)
+  sigma_lambda ~ normal(0, 0.5);
+  lambda ~ normal(1, sigma_lambda * scale);
   
   // beta
-  b ~ gamma(0.5, 1); // more diffuse
+  b ~ gamma(0.5, 2);
   
   // gamma
   to_vector(c_std) ~ std_normal();
-  sigma_c ~ gamma(2, 1); // more diffuse
+  sigma_c ~ gamma(2, 5); // more diffuse
   
   target += log_p_mu;
   
@@ -144,4 +147,3 @@ model {
   }
   
 }
-
