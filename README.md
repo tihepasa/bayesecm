@@ -62,3 +62,7 @@ A simpler SAR model was also fitted to the same data to compare the latent level
 ![image](https://user-images.githubusercontent.com/65618755/158409784-0a38869a-f857-4d67-a3ca-93ea2ed920f9.png)
 
 **Fig. 6.** Estimated latent processes &mu;<sub>i,t</sub> of the classic SAR model for some example sites.
+
+![image](https://user-images.githubusercontent.com/65618755/162437545-312100eb-d771-4d2e-8241-5adf8aa8d935.png)
+
+**Fig. 7.** Estimated latent processes &mu;<sub>i,t</sub> of the classic SAR model (blue line and ribbon) and the model in the paper (red line and ribbon) for some example sites. The SAR model has wider posterior intervals and it seems to fit closer to the actual observations (blue dots).
