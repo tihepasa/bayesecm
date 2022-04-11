@@ -63,6 +63,6 @@ A simpler SAR model was also fitted to the same data to compare the latent level
 
 **Fig. 6.** Estimated latent processes &mu;<sub>i,t</sub> of the classic SAR model for some example sites.
 
-![image](https://user-images.githubusercontent.com/65618755/162441504-68d6822e-3981-42b4-b426-53789ba65f3f.png)
+![image](https://user-images.githubusercontent.com/65618755/162728181-548bd2d8-36ef-4ea4-98b1-60a598fd4694.png)
 
 **Fig. 7.** Estimated latent processes &mu;<sub>i,t</sub> of the classic SAR model (blue line and ribbon) and the model in the paper (yellow line and ribbon) for some example sites.
