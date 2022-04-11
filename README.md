@@ -28,7 +28,7 @@ The priors we use for our model were chosen to reduce computational burden. The 
 
 ![image](https://user-images.githubusercontent.com/65618755/162422597-7db0f523-07d9-4d78-8d89-1c17360b0c91.png)
 
-**Fig. 1.** Estimated latent processes &mu;<sub>i,t</sub> of the model with wide priors for some example sites. In practice the difference between this and the corresponding values given the model with stricter priors is very small.
+**Fig. 1.** Estimated latent processes &mu;<sub>i,t</sub> of the model with wide priors for some example sites.
 
 ![image](https://user-images.githubusercontent.com/65618755/162422740-54e7b75c-96ce-42c9-a36d-ae5eb7cb717a.png)
 
@@ -65,4 +65,4 @@ A simpler SAR model was also fitted to the same data to compare the latent level
 
 ![image](https://user-images.githubusercontent.com/65618755/162441504-68d6822e-3981-42b4-b426-53789ba65f3f.png)
 
-**Fig. 7.** Estimated latent processes &mu;<sub>i,t</sub> of the classic SAR model (blue line and ribbon) and the model in the paper (yellow line and ribbon) for some example sites. The SAR model has wider posterior intervals and it seems to fit closer to the actual observations (black dots).
+**Fig. 7.** Estimated latent processes &mu;<sub>i,t</sub> of the classic SAR model (blue line and ribbon) and the model in the paper (yellow line and ribbon) for some example sites.
