@@ -2,7 +2,7 @@
 
 Materials for the paper *A Bayesian spatio-temporal analysis of markets during the Finnish 1860s famine* by Tiia-Maria Pasanen, Miikka Voutilainen, Jouni Helske and Harri Högmander
 
-The paper itself is available at https://arxiv.org/pdf/2106.06268.pdf.
+The paper itself is available at https://doi.org/10.1111/rssc.12577.
 
 The model is defined in the file `bayesecm_model.stan` and used in the corresponding R script found from `bayesecm_model.R`. The data used is in the file `par.rds`, which is read into R in the file `bayesecm_model.R`. The data includes the monthly regional rye prices on log scale from January 1861 to December 1869, and each row corresponds one region and the rownumber the id number of that region. Also the neighbourhood matrix is included. The overall 80 Finnish regions in our context correspond to 48 administrational districts and 32 town administrations of that time. The regions can be seen from the figures in the folder `figs`, which includes illustrations of regional price increases simulated according to the model.
 
